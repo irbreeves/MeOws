@@ -34,11 +34,6 @@ Off_water = 0
 
 # Load Data
 data = pd.read_csv(file,header=3,infer_datetime_format=True)
-dt = data['DateTime']
-Temp = data['BoardTemp_C']
-Batt = data['Battery_V']
-Range_bed = data['SonarRange_Bed_mm']
-Range_water = data['SonarRange_Water_mm']
 
 if Tides:
     tidedata = pd.read_excel(tidefile, sheet_name=tidesheet, parse_dates=[['Date','Time (LST/LDT)']])
@@ -72,7 +67,7 @@ data.plot.scatter('DateTime', 'WaterElev', c='blue', s=1, ax=plt.gca())
 data.plot.scatter('DateTime', 'BedElev', c='peru', s=1, ax=plt.gca())
 plt.xlabel('Date-Time')
 plt.ylabel('Elevation (m NAVD88)')
-if Tides: plt.legend(['Tide Gauge - Wachapreague', 'Bed', 'Water'], markerscale=10, loc='upper right')
+if Tides: plt.legend(['Tide', 'Water', 'Bed'], markerscale=10, loc='upper right')
 else: plt.legend(['Bed', 'Water'], markerscale=10, loc='upper right')
 plt.show()
 
@@ -83,7 +78,7 @@ if Tides: plt.plot(tide_dt, tide_waterlevel, c='gray', ls='-', alpha=0.15)
 data.plot.scatter('DateTime', 'BedElev', c='peru', s=1, ax=plt.gca())
 plt.xlabel('Date-Time')
 plt.ylabel('Elevation (m NAVD88)')
-if Tides: plt.legend(['Tide Gauge - Wachapreague', 'Bed', 'Water'], markerscale=10, loc='upper right')
+if Tides: plt.legend(['Tide', 'Bed'], markerscale=10, loc='upper right')
 else: plt.legend(['Bed', 'Water'], markerscale=10, loc='upper right')
 plt.show()
 
