@@ -79,7 +79,7 @@ data.plot.scatter('DateTime', 'BedElev', c='peru', s=1, ax=plt.gca())
 plt.xlabel('Date-Time')
 plt.ylabel('Elevation (m NAVD88)')
 if Tides: plt.legend(['Tide', 'Bed'], markerscale=10, loc='upper right')
-else: plt.legend(['Bed', 'Water'], markerscale=10, loc='upper right')
+else: plt.legend(['Bed'], markerscale=10, loc='upper right')
 plt.show()
 
 # Plot Temperature and Battery
