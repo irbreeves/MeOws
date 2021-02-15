@@ -1,5 +1,6 @@
 # Measuring Overwash (MeOw) stations
 
+[![DOI](https://zenodo.org/badge/338133433.svg)](https://zenodo.org/badge/latestdoi/338133433)
 
 `MeOw_SonarDataLogger.ino` Main runfile for Mayfly Data Logger.
 
