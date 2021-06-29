@@ -9,8 +9,16 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <RTCTimer.h>
+#include <Sodaq_DS3231.h>
 
 SoftwareSerial sonarSerial(5, -1);  // Define serial port for recieving data.
+
+int currentminute;
+int currentsecond;
+long milliTime = 0;
+long t = 0;
+long currentunixtime = 0;
+static uint32_t oldtime=millis();
 
 
 //int parseSonar(void)
@@ -69,34 +77,60 @@ int parseSonar(void)
 void setup()
 {
     Serial.begin(57600);  // Start serial port for display
-
+    rtc.begin();
     pinMode(5, INPUT);  // Set the pin mode for the software serial port
     sonarSerial.begin(9600);  // Start serial port for maxSonar
     sonarSerial.setTimeout(200);  // Set a timeout for the serial instance
     // Even the slowest sensors should respond at a rate of 6Hz (166ms).
-
+    
     Serial.println("Mayfly MaxBotix sonar sensor rangefinder example");
 
-//    boolean tnow = getnow();
-//    Serial.println("Time")
-//    Serial.print(tnow);
-
-    // Read and print the header from the MaxBotix
-    // Serial.println(F("----------------------------------------------------"));
-    // for(int i=0; i < 6; i++)  // For debugging
-    // {
-    //     Serial.println(sonarSerial.readStringUntil('\r'));
-    // }
-    // Serial.println(F("----------------------------------------------------"));
+    Serial.println("Date/Time: ");
+    Serial.print(getDateTime());
 
 }
 
 void loop()
 {
+    if (millis() - oldtime >= 1000)
+    {
+    oldtime = millis();
+    Serial.print("Time");
+    Serial.println(oldtime);
     parseSonar();
-    delay(450);
-    //Serial.println(F("----------------------------------------------------"));
+    }
 }
+
+
+//void loop()
+//{
+//    if (currentsecond % 1 == 0)
+//    {
+//    Serial.print("Time");
+//    Serial.println(currentsecond);
+//    parseSonar();
+//    }
+//}
+
+
+String getDateTime()
+{
+  String dateTimeStr;
+  
+  //Create a DateTime object from the current time
+  DateTime dt(rtc.makeDateTime(rtc.now().getEpoch()));
+
+  currentunixtime = (dt.get()) + 946684800;    //Unix time in seconds 
+
+  currentminute = (dt.minute());
+  currentsecond = (dt.second());
+
+  //Convert it to a String
+  dt.addToString(dateTimeStr);
+   
+  return dateTimeStr;  
+}
+
 
 uint32_t getNow()
 {
