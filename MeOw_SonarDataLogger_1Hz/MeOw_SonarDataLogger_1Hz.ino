@@ -35,6 +35,7 @@
 #include <SD.h>
 #include <Arduino.h>
 #include <SDL_Arduino_SSD1306.h>
+#include <AMAdafruit_GFX.h>
 #include <Sodaq_DS3231.h>
 #include <Sodaq_PcInt_PCINT0.h>
 #include <SoftwareSerial_PCINT12.h>
