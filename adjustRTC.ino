@@ -12,7 +12,8 @@ char weekDay[][4] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 //Takes ~7 seconds to upload!
 //24 Hour clock!
 //Must use double-0 not single 0
-DateTime dt(2021, 6, 29, 12, 34, 00, 2);
+//Follow instructions here for setting RTC with this script: https://github.com/EnviroDIY/Sodaq_DS3231/tree/master/examples/adjust
+DateTime dt(2021, 7, 7, 14, 59, 00, 3);
 
 
 void setup () 
