@@ -1,6 +1,6 @@
 // MeOw Station Ultrasonic Distance Sensor Data Logging
 
-// Version 7 - 1 Hz sampling option, no sleep, single sonar
+// Version 7.2 - 1 Hz sampling option, no sleep, single sonar
 
 // Takes readings from a single Maxbotix MB7389 sonar and prints it on the serial monitor
 // Records data on microSD card; uses a SSD1306 OLED display connected to the Mayfly's I2C Grove connector
@@ -11,7 +11,7 @@
 // Sonar 5 (Serial) to Mayfly D10
 
 // Ian Reeves and Katherine Anarde
-// August 17, 2021
+// September 3, 2021
 
 
 /////////////////////////////////////////////  SET DATA HEADER  //////////////////////////////////////////////
@@ -20,7 +20,7 @@
 #define PROJECT_LOCATION "Project & Location: DUNEX - Pea Island, NC"
 #define INSTALL_DATE "Installation Date: September 16, 2021"
 #define DATA_HEADER "DateTime,UnixTime,Battery_V,SonarRange_mm"
-#define FILE_NAME "MeOw3_091621_DataLog.txt"
+#define FILE_NAME "DataLog3.txt"  //NOTE: this cannot have underscores
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////  
 
@@ -66,7 +66,7 @@ void setup()
   rtc.begin();
   
   //Initialize OLED display
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C, false);  // initialize with the I2C addr 0x3C (for the 128x64)
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C, false);  //Initialize with the I2C addr 0x3C (for the 128x64)
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -74,11 +74,7 @@ void setup()
   display.println();
   display.println(LOGGERNAME);
   display.display();
-  
-  //Initialise the sonar serial connection
-  sonarSerial.begin(9600);
-  delay(100);
-  
+
   //Set mode for LEDs
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
@@ -111,7 +107,7 @@ void loop()
           old_ts = ts;
           dataRec = createDataRecord(ts);
 
-          ////////////////   take Sensor A reading   ////////////////
+          //Take sensor reading
           range_mm = SonarRead();
           
           //Save the data record to the log file   
@@ -147,7 +143,7 @@ String getDateTime(uint32_t ts)
   //Create a DateTime object from the current time
   DateTime dt(rtc.makeDateTime(ts));
 
-  currentunixtime = (dt.get()) + 946684800;    // Unix time in seconds 
+  currentunixtime = (dt.get()) + 946684800;    //Unix time in seconds 
 
   currentminute = (dt.minute());
   currentsecond = (dt.second());
@@ -248,8 +244,11 @@ int SonarRead()
   int rangeAttempts = 0;
   int result = 0;
 
+  sonarSerial.begin(9600);  //Initialize the sonar serial connection
+  //delay(100);
+
   sonarSerial.listen();
-  while (stringComplete == false && rangeAttempts < 6)
+  while (stringComplete == false && rangeAttempts < 5)
   {
       result = sonarSerial.parseInt();
       sonarSerial.read();  //To throw away the carriage return
@@ -265,6 +264,8 @@ int SonarRead()
   }
   dataRec += ",";    
   dataRec += result;
+
+  sonarSerial.end();
 
   return result;
 }
