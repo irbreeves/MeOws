@@ -18,7 +18,7 @@
 
 #define LOGGERNAME "MeOw Station [2]"
 #define PROJECT_LOCATION "Project & Location: DUNEX - Pea Island, NC"
-#define INSTALL_DATE "Installation Date: September 16, 2021"
+#define INSTALL_DATE "Installation Date: October 9, 2021"
 #define DATA_HEADER "DateTime,UnixTime,Battery_V,SonarRange_mm"
 #define FILE_NAME "DataLog2.txt"  //NOTE: this cannot have underscores
 

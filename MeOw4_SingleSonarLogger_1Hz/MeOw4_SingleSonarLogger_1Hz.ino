@@ -17,8 +17,8 @@
 /////////////////////////////////////////////  SET DATA HEADER  //////////////////////////////////////////////
 
 #define LOGGERNAME "MeOw Station [4]"
-#define PROJECT_LOCATION "Project & Location: DUNEX - Pea Island, NC"
-#define INSTALL_DATE "Installation Date: September 16, 2021"
+#define PROJECT_LOCATION "Project & Location: REALDUNE - Sand Engine, Netherlands"
+#define INSTALL_DATE "Installation Date: November 19, 2021"
 #define DATA_HEADER "DateTime,UnixTime,Battery_V,SonarRange_mm"
 #define FILE_NAME "DataLog4.txt"  //NOTE: this cannot have underscores
 
