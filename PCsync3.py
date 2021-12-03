@@ -10,7 +10,6 @@ only modified slightly:
  - info about serial devices accessed via object attributes rather than position in a tuple.
  - convert Python3 unicode strings to bytestrings (and visa versa) so that we can read/write data
    on serial port.
-
 This program interacts with an FTDI connected Arduino device (like the EnviroDIY Mayfly)
 running sync_clock_PC.ino to synchronize the RTC chip to Network Time Protocol clocks
 (or to local PC time is NTP is unavailable)
@@ -32,7 +31,8 @@ import serial.tools.list_ports
 
 # Set offset from unversal coordinated time (aka Greenwich Mean Time, aka UTC)
 
-UTC_offset = -4
+# UTC_offset = -4  # -4, EDT for DUNEX deployment
+UTC_offset = 1  # 1, European Central for REALDUNE deployment
 
 
 def get_device_time():
@@ -55,7 +55,7 @@ def get_pc_time(notifications=False):
     try:
         c = ntplib.NTPClient()
         response = c.request('us.pool.ntp.org', version=3)
-        utc_unix_time = response.orig_time + (UTC_offset*3600)
+        utc_unix_time = response.orig_time + (UTC_offset * 3600)
         if notifications:
             print("Using time from Network Time Protocol server us.pool.ntp.org")
     except:
@@ -86,7 +86,7 @@ def parse_device_set_response():
     diffts_abs = int(third_resp.split()[4])
     setline = device.readline().decode()
     # print setline
-    
+
     oldts = int(setline.split()[7])
     newts = int(setline.split()[4])
     return oldts, newts, diffts_abs
@@ -99,7 +99,7 @@ ports = serial.tools.list_ports.comports()
 device_ports = [
     p for p in ports
     if p.manufacturer == 'FTDI'
-    ]
+]
 
 # Give warnings if 0 or >1 Mayflies found
 if not device_ports:

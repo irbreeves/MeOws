@@ -11,7 +11,7 @@ char weekDay[][4] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
 //Take care of week-day also. Monday is 1, Tuesday 2, etc.
 //Follow instructions here for setting RTC with this script: https://github.com/EnviroDIY/Sodaq_DS3231/tree/master/examples/adjust
 //Must use double-0 not single 0
-DateTime dt(2021, 9, 2, 17, 52, 30, 4);
+DateTime dt(2021, 11, 19, 15, 44, 00, 5);
 
 //NOTE: Ian did this for MeOws1-6 for DUNEX on September 2 using his desktop computer.
 //Instead of using the reset button, he just timed the time it takes to upload the 

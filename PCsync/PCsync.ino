@@ -7,6 +7,7 @@
  * a "T" followed by a unix time stamp to the Mayfly (ie, T1451606400) or by running the
  * sync_clock_PC.py python script which will automatically synchronize the RTC to UTC based
  * on the computer's clock or NTP (if internet connection is available).
+ * * NOTE FROM KA: now named PCsync3.py
  *
  * This script is meant to be used on a naked EnviroDIY Mayfly board with no connection other than
  * directly to the computer via microUSB.  If a GPRSbee or other internet/radio access shields are
