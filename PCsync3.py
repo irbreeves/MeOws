@@ -24,15 +24,15 @@ import ntplib
 import serial.tools.list_ports
 
 
-# from tzlocal import get_localzone
+from tzlocal import get_localzone
 
 # get local timezone
 # local_tz = get_localzone()
 
 # Set offset from unversal coordinated time (aka Greenwich Mean Time, aka UTC)
 
-# UTC_offset = -4  # -4, EDT for DUNEX deployment
-UTC_offset = 1  # 1, European Central for REALDUNE deployment
+UTC_offset = -4  # -4, EDT for DUNEX deployment
+# UTC_offset = 1  # 1, European Central for REALDUNE deployment
 
 
 def get_device_time():

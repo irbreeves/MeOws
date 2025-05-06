@@ -1,86 +1,73 @@
-# MeOws_PlotData
+# MeOw_PlotData
 
 # Script reads MeOw data texfile, converts distances to elevations, and plots results
 
-# Ian R.B. Reeves, modified by K. Anarde for the DUNEX deployment
+# Ian R.B. Reeves, modified by K. Anarde to make more general
 
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# %%
 
-# Input Data Info
-MeOw = 5  # Station number [1,2,3,4,5,6]
-SensorElev = 0  # Start elevation of bed sensor
-Filter_min = 300  # Minimum allowable sonar distance reading
-Filter_max = 5000  # Maximum allowable sonar distance reading
+def plot_data(
+        meow_file,
+        sensor_elevation,
+        filter_min,
+        filter_max,
+        tide_file=None
+):
 
-# File Name
-# file = 'Data/091321_BucketTest_DATALOG' + str(MeOw) + '.TXT'
-# file = 'Data/091921_PoleTest_DATALOG' + str(MeOw) + '.TXT'
-# file = 'Data/DATALOG' + str(MeOw) + '_092021_092721' + '.TXT'
-# file = 'Data/DATALOG' + str(MeOw) + '_092821_100821' + '.TXT'
-file = 'Data/DATALOG' + str(MeOw) + '_100821-102421' + '.TXT'
-# file = 'Data/111521_MeOw3_NewBattery.TXT'
-# file = 'Data/DATALOG1_111821_112321_REALDUNE.TXT'
+    # import tide data
+    if tide_file is not None:
 
-# Add Optional Hourly NOAA Tide Data
-Tides = False
-if Tides:
-    tidefile = 'Data/WachapreagueHourly-21Aug-22Nov19.xlsx'
-    tidesheet = 0
+        tidesheet = 0
+        tidedata = pd.read_excel(tide_file, sheet_name=tidesheet, parse_dates=[['Date', 'Time (LST/LDT)']])
+        tide_dt = tidedata['Date_Time (LST/LDT)']
+        tide_waterlevel = tidedata['Verified (m)']
 
-# Add Optional Offset (set to 0 if none)
-Off_bed = 0
+    # load and filter data
+    data = pd.read_csv(meow_file, header=3, index_col=0, parse_dates=True)
+    data_raw = data
+    data = data[data['SonarRange_mm'] > filter_min]
+    data = data[data['SonarRange_mm'] < filter_max]
 
-# %%
+    # convert distance readings to elevations
+    if sensor_elevation == 0:
+        data['BedElev'] = data.SonarRange_mm / 1000
+        data_raw['BedElev'] = data_raw.SonarRange_mm / 1000
+    else:
+        data['BedElev'] = sensor_elevation - data.SonarRange_mm / 1000
+        data_raw['BedElev'] = sensor_elevation - data_raw.SonarRange_mm / 1000
 
-# Load Data
-data = pd.read_csv(file, header=3, index_col=0, parse_dates=True)
+    # plot bed elevations
+    plt.figure(figsize=(10, 6))
+    data['BedElev'].plot(marker='.', alpha=0.5, linestyle='None')
+    if tide_file is not None:
+        plt.plot(tide_dt, tide_waterlevel, c='gray', ls='-', alpha=0.15)
+    plt.xlabel('Date-Time')
+    if sensor_elevation == 0:
+        plt.ylabel('Distance (m)')
+    else:
+        plt.ylabel('Elevation (m NAVD88)')
+    if tide_file is not None:
+        plt.legend(['Tide', 'Bed'], markerscale=10, loc='upper right')
+    else:
+        plt.legend(['Bed'], markerscale=2, loc='upper right')
+    plt.show()
 
-if Tides:
-    tidedata = pd.read_excel(tidefile, sheet_name=tidesheet, parse_dates=[['Date', 'Time (LST/LDT)']])
-    tide_dt = tidedata['Date_Time (LST/LDT)']
-    tide_waterlevel = tidedata['Verified (m)']
+    # Plot raw data
+    plt.figure(figsize=(10, 6))
+    data_raw['BedElev'].plot(marker='.', alpha=0.5, linestyle='None')
+    plt.xlabel('Date-Time')
+    if sensor_elevation == 0:
+        plt.ylabel('Distance (m)')
+    else:
+        plt.ylabel('Elevation (m NAVD88)')
+    plt.legend(['Raw-bed'], markerscale=2, loc='upper right')
+    plt.show()
 
-# Filter Data
-data_raw = data
-data = data[data['SonarRange_mm'] > Filter_min]
-data = data[data['SonarRange_mm'] < Filter_max]
-
-# Convert Distance Readings to Elevations
-# data['BedElev'] = SensorElev - data.SonarRange_mm / 1000
-data['BedElev'] = data.SonarRange_mm / 1000
-data_raw['BedElev'] = data_raw.SonarRange_mm / 1000
-
-# # Apply Optional Offsets
-data['BedElev'] += Off_bed
-
-# %%
-
-# Plot Only Bed Elevations
-plt.figure(figsize=(10, 6))
-data['BedElev'].plot(marker='.', alpha=0.5, linestyle='None')
-# if Tides: plt.plot(tide_dt, tide_waterlevel, c='gray', ls='-', alpha=0.15)
-plt.xlabel('Date-Time')
-# plt.ylabel('Elevation (m)')
-plt.ylabel('Distance (m)')
-# if Tides: plt.legend(['Tide', 'Bed'], markerscale=10, loc='upper right')
-plt.legend(['Bed'], markerscale=2, loc='upper right')
-plt.show()
-
-# Plot raw data
-plt.figure(figsize=(10, 6))
-data_raw['BedElev'].plot(marker='.', alpha=0.5, linestyle='None')
-plt.xlabel('Date-Time')
-# plt.ylabel('Elevation (m)')
-plt.ylabel('Distance (m)')
-plt.legend(['Raw-bed'], markerscale=2, loc='upper right')
-plt.show()
-
-# Plot Battery
-plt.figure(figsize=(10, 6))
-data_raw['Battery_V'].plot(color='forestgreen')
-plt.xlabel('Date-Time')
-plt.ylabel('Battery Voltage')
-plt.show()
+    # Plot Battery
+    plt.figure(figsize=(10, 6))
+    data_raw['Battery_V'].plot(color='forestgreen')
+    plt.xlabel('Date-Time')
+    plt.ylabel('Battery Voltage')
+    plt.show()
